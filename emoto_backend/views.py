@@ -135,8 +135,10 @@ def unpair(request, username):
         partner = profile.partner
         profile.partner = None
         profile.pair_code = generate_pair_code()
+        profile.messages.clear()
         partner.partner = None
         partner.pair_code = generate_pair_code()
+        partner.messages.clear()
         profile.save()
         partner.save()
         return JsonResponse({
