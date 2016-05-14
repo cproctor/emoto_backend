@@ -135,10 +135,12 @@ def unpair(request, username):
         partner = profile.partner
         profile.partner = None
         profile.pair_code = generate_pair_code()
-        profile.message_set.clear()
+        for message in profile.message_set.all():
+            message.delete()
         partner.partner = None
         partner.pair_code = generate_pair_code()
-        partner.message_set.clear()
+        for message in partner.message_set.all():
+            message.delete()
         profile.save()
         partner.save()
         return JsonResponse({
