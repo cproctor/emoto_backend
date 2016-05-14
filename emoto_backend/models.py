@@ -132,7 +132,9 @@ class Message(models.Model):
     def save(self, *args, **kwargs):
         "Make sure to set some props before saving the first time"
         if not self.pk:
-            self.created_time = datetime.utcnow()
+            now = datetime.utcnow()
+            now.replace(microsecond=0)
+            self.created_time = now
         super().save(*args, **kwargs)    
     
     def __str__(self):
