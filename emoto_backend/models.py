@@ -117,6 +117,7 @@ class Profile(models.Model):
             "city": self.city,
             "latitude": float(self.latitude),
             "longitude": float(self.longitude),
+            "time_zone": self.time_zone,
             "weather": self.weather,
             "temperature": self.temperature,
             "weather_icon_url": self.weather_icon_url,
