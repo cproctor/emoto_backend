@@ -45,6 +45,9 @@ class Profile(models.Model):
     #user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     username = models.TextField(max_length=100, unique=True)
     partner = models.OneToOneField("Profile", null=True, related_name="recip_partner")
+    present = models.BooleanField(default=False)
+    presence_timestamp = models.DateTimeField()
+    current_emoto = models.ForeignKey(Emoto, null=True)
     pair_code = models.TextField(max_length=6, null=True)
     avatar = models.ImageField(null=True)
     latitude = models.DecimalField(max_digits=9, decimal_places=6)
@@ -60,6 +63,7 @@ class Profile(models.Model):
         "Make sure to set some props before saving the first time"
         if not self.pk:
             self.pair_code = generate_pair_code()
+            self.presence_timestamp = datetime.now()
             self.reload_cache()
         log.info(self.status_json())
         log.info(self.__dict__)
@@ -116,7 +120,7 @@ class Profile(models.Model):
             self.time_zone_cached = weather_info['time_zone']
             self.temperature_cached = weather_info['temperature']
             self.weather_icon_url_cached = weather_info['weather_icon_url']
-            self.cache_timestamp = datetime.now()
+            self.cache_timestamp = datetime.now().replace(microsecond=0)
         else: 
             log.warn("WEATHER LOOKUP FAILED")
 
@@ -124,6 +128,8 @@ class Profile(models.Model):
         return {
             "username": self.username,
             "avatar_url": self.avatar.url if self.avatar else None,
+            "present": self.present,
+            "presence_timestamp": self.presence_timestamp,
             "city": self.city,
             "latitude": float(self.latitude),
             "longitude": float(self.longitude),
@@ -131,7 +137,8 @@ class Profile(models.Model):
             "weather": self.weather,
             "temperature": self.temperature,
             "weather_icon_url": self.weather_icon_url,
-            "pair_code": self.pair_code
+            "pair_code": self.pair_code,
+            "current_emoto": self.current_emoto.json() if self.current_emoto else None
         }
             
 class Message(models.Model):

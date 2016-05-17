@@ -5,6 +5,7 @@ from emoto_backend.forms import EmotoForm
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ValidationError
+from datetime import datetime
 import json
 import logging
 
@@ -90,8 +91,6 @@ def set_location(request, username):
     try:
         profile = Profile.objects.get(username=username)
         props = json.loads(request.body.decode("utf-8"))
-        log.info(props)
-    
         missing = missing_props(props, ["latitude", "longitude"])
         if missing: 
             return JsonResponse({"error": "missing properties: {}".format(", ".join(missing))}, status=400)
@@ -107,6 +106,46 @@ def set_location(request, username):
         return JsonResponse({"error": "no such user"}, status=400)
     except ValueError:
         return JsonResponse({"error": "malformed json"}, status=400)
+
+@csrf_exempt
+def set_current_emoto(request, username):
+    try:
+        profile = Profile.objects.get(username=username)
+        props = json.loads(request.body.decode("utf-8"))
+        missing = missing_props(props, ["name"])
+        if missing: 
+            return JsonResponse({"error": "missing properties: {}".format(", ".join(missing))}, status=400)
+        emoto = Emoto.objects.get(name=props['name'])
+        profile.current_emoto = emoto
+        profile.save()
+        return JsonResponse(profile.status_json())
+    except Profile.DoesNotExist:
+        return JsonResponse({"error": "no such user"}, status=400)
+    except Emoto.DoesNotExist:
+        return JsonResponse({"error": "no such emoto"}, status=400)
+    except ValueError:
+        return JsonResponse({"error": "malformed json"}, status=400)
+
+@csrf_exempt
+def set_present(request, username):
+    try:
+        profile = Profile.objects.get(username=username)
+        profile.present = True
+        profile.presence_timestamp = datetime.now().replace(microsecond=0)
+        profile.save()
+        return JsonResponse(profile.status_json())
+    except Profile.DoesNotExist:
+        return JsonResponse({"error": "no such user"}, status=400)
+
+@csrf_exempt
+def set_absent(request, username):
+    try:
+        profile = Profile.objects.get(username=username)
+        profile.present = False
+        profile.save()
+        return JsonResponse(profile.status_json())
+    except Profile.DoesNotExist:
+        return JsonResponse({"error": "no such user"}, status=400)
 
 @csrf_exempt
 def pair(request, username, pair_code):
