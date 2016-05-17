@@ -18,6 +18,10 @@ class EmotoAPI():
     PAIR_URL = "{}/api/v1/users/{}/pair/{}"
     UNPAIR_URL = "{}/api/v1/users/{}/unpair"
     EMOTOS_URL = "{}/api/v1/emotos"
+    NEW_EMOTO_URL = "{}/api/v1/emotos/new"
+    PRESENT_URL = "{}/api/v1/users/{}/present"
+    ABSENT_URL = "{}/api/v1/users/{}/absent"
+    SET_CURRENT_EMOTO_URL = "{}/api/v1/users/{}/emoto"
 
     def __init__(self, base_url, verbose=True):
         self.base_url = base_url
@@ -119,6 +123,43 @@ class EmotoAPI():
     def emotos(self, raw=False):
         url = self.EMOTOS_URL.format(self.base_url)
         response = requests.get(url)
+        if raw:
+            return response
+        else:
+            return response.json()
+
+    def new_emoto(self, name, filepath, raw=False):
+        url = self.NEW_EMOTO_URL.format(self.base_url)
+        with open(filepath, 'rb') as imagefile:
+            response = requests.post(
+                url, 
+                data={"name": name},
+                files={"image": imagefile}
+            )
+        if raw:
+            return response
+        else:
+            return response.json()
+
+    def present(self, username, raw=False):
+        url = self.PRESENT_URL.format(self.base_url, username)
+        response = requests.post(url)
+        if raw:
+            return response
+        else:
+            return response.json()
+
+    def absent(self, username, raw=False):
+        url = self.ABSENT_URL.format(self.base_url, username)
+        response = requests.post(url)
+        if raw:
+            return response
+        else:
+            return response.json()
+        
+    def set_current_emoto(self, username, emoto_name, raw=False):
+        url = self.SET_CURRENT_EMOTO_URL.format(self.base_url, username)
+        response = requests.post(url, data=json.dumps({"name": emoto_name}))
         if raw:
             return response
         else:

@@ -116,6 +116,7 @@ def set_current_emoto(request, username):
         if missing: 
             return JsonResponse({"error": "missing properties: {}".format(", ".join(missing))}, status=400)
         emoto = Emoto.objects.get(name=props['name'])
+        log.info("Setting emoto for {} to {}".format(profile.username, emoto.name))
         profile.current_emoto = emoto
         profile.save()
         return JsonResponse(profile.status_json())
