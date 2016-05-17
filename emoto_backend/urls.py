@@ -26,5 +26,6 @@ urlpatterns = [
     url(r'^api/v1/users/(?P<username>\w+)/location', views.set_location, name="set_location"),
     url(r'^api/v1/users/(?P<username>\w+)/pair/(?P<pair_code>\w+)/?$', views.pair, name="pair"),
     url(r'^api/v1/users/(?P<username>\w+)/unpair/?$', views.unpair, name="unpair"),
+    url(r'^api/v1/emotos/new/?', views.new_emoto, name="new_emoto"),
     url(r'^api/v1/emotos/?', views.emotos, name="emotos")
 ]

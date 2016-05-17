@@ -8,15 +8,24 @@ from .helpers import get_weather, generate_pair_code
 from django.contrib import admin
 import logging
 from django.core.exceptions import ValidationError
+from django.utils.timezone import now
+import os
 
 log = logging.getLogger('django')
 
 # class EmotoSet(models.Model):
     # pass
 
+def s3_emoto_upload(instance, filename):
+    filename_base, filename_ext = os.path.splitext(filename)
+    return "emotos/{}{}".format(
+        now().strftime("%Y%m%d%H%M%S"),
+        filename_ext.lower()
+    )
+
 class Emoto(models.Model):
     name = models.TextField(max_length=200)
-    image = models.ImageField()
+    image = models.ImageField(upload_to=s3_emoto_upload)
     available = models.BooleanField(default=True)
 
     def __str__(self):

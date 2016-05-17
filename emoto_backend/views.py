@@ -1,6 +1,7 @@
 from django.http import JsonResponse, Http404
 from django.shortcuts import get_object_or_404
 from emoto_backend.models import Message, Profile, Emoto, generate_pair_code
+from emoto_backend.forms import EmotoForm
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ValidationError
@@ -155,3 +156,21 @@ def unpair(request, username):
 def emotos(request):
     emotos = Emoto.objects.filter(available=True).all()
     return JsonResponse({"emotos": [e.json() for e in emotos]})
+
+@csrf_exempt
+def new_emoto(request):
+    # TODO: Resize: http://djangotricks.blogspot.com/2013/12/how-to-store-your-media-files-in-amazon.html
+    try:
+        form = EmotoForm(request.POST, request.FILES)
+        emoto = form.save()
+        return JsonResponse(emoto.json())
+    except ValidationError as e:
+        return JsonResponse({"error": str(e)}, status=400)
+
+
+        
+
+
+
+
+    
