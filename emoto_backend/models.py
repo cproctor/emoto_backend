@@ -33,6 +33,7 @@ class Emoto(models.Model):
 
     def json(self):
         return {
+            "id": self.id,
             "url": self.image.url,
             "name": self.name
         }
