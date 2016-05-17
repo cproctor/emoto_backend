@@ -37,3 +37,4 @@ A backend for emoto.
 - django-storages
 - requests
 - pillow
+- pyaml
