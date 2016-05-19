@@ -19,6 +19,10 @@ def missing_props(props, expected_props):
     if missing:
         return missing
 
+def err(message):
+    log.error({"error": message, "timestamp": datetime.now()})
+    return JsonResponse({"error": message}, status=400)
+
 @csrf_exempt
 def signup(request):
     try:
@@ -28,19 +32,18 @@ def signup(request):
     
         missing = missing_props(props, ["username", "latitude", "longitude"])
         if missing:
-            return JsonResponse({"error": "missing properties: {}".format(", ".join(missing))}, status=400)
+            return err("missing properties: {}".format(", ".join(missing)))
         if Profile.objects.filter(username=props.get('username')).count() != 0:
-            return JsonResponse({"error": "username already exists"}, status=400)
+            return err("username {} already exists".format(props.get('username')))
     
         profile = Profile(**props)
         profile.clean()
         profile.save()
         return JsonResponse(profile.status_json())
     except ValidationError as e:
-        return JsonResponse({"error": str(e)}, status=400)
+        return err(str(e))
     except ValueError:
-        return JsonResponse({"error": "malformed json"}, status=400)
-        
+        return err("malformed json")
 
 def status(request, username):
     try:
