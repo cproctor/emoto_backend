@@ -18,7 +18,7 @@ from django.contrib import admin
 from emoto_backend import views
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    #url(r'^admin/', admin.site.urls),
     url(r'^api/v1/users/new/?$', views.signup, name="signup"),
     url(r'^api/v1/users/(?P<username>\w+)/status/?$', views.status, name="status"),
     url(r'^api/v1/users/(?P<username>\w+)/messages/?$', views.messages, name="messages"),
