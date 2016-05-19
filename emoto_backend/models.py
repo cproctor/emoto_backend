@@ -63,7 +63,7 @@ class Profile(models.Model):
         "Make sure to set some props before saving the first time"
         if not self.pk:
             self.pair_code = generate_pair_code()
-            self.presence_timestamp = datetime.now()
+            self.presence_timestamp = datetime.now().replace(microsecond=0)
             self.reload_cache()
         log.info(self.status_json())
         log.info(self.__dict__)
