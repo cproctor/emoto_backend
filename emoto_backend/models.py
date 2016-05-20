@@ -162,10 +162,7 @@ class Message(models.Model):
         return {
             "id": self.id,
             "text": self.text, 
-            "emoto": {
-                "name": self.emoto.name,
-                "url": self.emoto.image.url
-            } if self.emoto else None,
+            "emoto": self.emoto.json() if self.emoto else None,
             "author": self.author.username,
             "created_time": self.created_time.isoformat()            
         }
