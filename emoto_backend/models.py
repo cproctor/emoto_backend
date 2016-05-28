@@ -58,6 +58,7 @@ class Profile(models.Model):
     temperature_cached = models.IntegerField()
     weather_icon_url_cached = models.URLField(max_length=2000)
     cache_timestamp = models.DateTimeField()
+    device_token = models.TextField(max_length=200, null=True)
 
     def save(self, *args, **kwargs):
         "Make sure to set some props before saving the first time"

@@ -17,6 +17,7 @@ class EmotoAPI():
     SET_LOCATION_URL = "{}/api/v1/users/{}/location"
     PAIR_URL = "{}/api/v1/users/{}/pair/{}"
     UNPAIR_URL = "{}/api/v1/users/{}/unpair"
+    REGISTER_PUSH_NOTIFICATIONS_URL = "{}/api/v1/users/{}/register_push_notifications"
     EMOTOS_URL = "{}/api/v1/emotos"
     NEW_EMOTO_URL = "{}/api/v1/emotos/new"
     PRESENT_URL = "{}/api/v1/users/{}/present"
@@ -115,6 +116,14 @@ class EmotoAPI():
         if self.verbose: 
             print("POST {}".format(url))
         response = requests.post(url)
+        if raw:
+            return response
+        else:
+            return response.json()
+
+    def register_push_notifications(self, username, token, raw=False):
+        url = self.REGISTER_PUSH_NOTIFICATIONS_URL.format(self.base_url, username) 
+        response = requests.post(url, data=json.dumps({"token": token}))
         if raw:
             return response
         else:

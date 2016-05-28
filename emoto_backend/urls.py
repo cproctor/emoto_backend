@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'^api/v1/users/(?P<username>\w+)/absent', views.set_absent, name="set_absent"),
     url(r'^api/v1/users/(?P<username>\w+)/pair/(?P<pair_code>\w+)/?$', views.pair, name="pair"),
     url(r'^api/v1/users/(?P<username>\w+)/unpair/?$', views.unpair, name="unpair"),
+    url(r'^api/v1/users/(?P<username>\w+)/register_push_notifications/?$', views.register_push_notifications, name="register_push_notifications"),
     url(r'^api/v1/emotos/new/?', views.new_emoto, name="new_emoto"),
     url(r'^api/v1/emotos/?', views.emotos, name="emotos")
 ]

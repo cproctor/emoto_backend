@@ -196,6 +196,21 @@ def unpair(request, username):
     except ValidationError as e:
         return JsonResponse({"error": str(e)}, status=400)
 
+@csrf_exempt
+def register_push_notifications(request, username):
+    try:
+        profile = Profile.objects.get(username=username)
+        props = json.loads(request.body.decode("utf-8"))
+        missing = missing_props(props, ["token"])
+        if missing: 
+            return JsonResponse({"error": "missing properties: {}".format(", ".join(missing))}, status=400)
+        profile.device_token = props["token"]
+        profile.save()
+        return JsonResponse(profile.status_json())
+    except Profile.DoesNotExist:
+        return err("no such user")
+
+
 def emotos(request):
     emotos = Emoto.objects.filter(available=True).all()
     return JsonResponse({"emotos": [e.json() for e in emotos]})
