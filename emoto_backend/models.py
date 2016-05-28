@@ -44,7 +44,7 @@ class Emoto(models.Model):
 class Profile(models.Model):
     #user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     username = models.TextField(max_length=100, unique=True)
-    partner = models.OneToOneField("Profile", null=True, related_name="recip_partner")
+    partner = models.ForeignKey("Profile", null=True, related_name="recip_partner")
     present = models.BooleanField(default=False)
     presence_timestamp = models.DateTimeField()
     current_emoto = models.ForeignKey(Emoto, null=True)

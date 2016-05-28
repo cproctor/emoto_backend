@@ -156,8 +156,8 @@ def pair(request, username, pair_code):
     try:
         profile = Profile.objects.get(username=username)
         partner = Profile.objects.get(pair_code=pair_code)
-        if profile.partner or partner.partner:
-            return JsonResponse({"error": "user already paired"}, status=400)
+        #if profile.partner or partner.partner:
+            #return err("user already paired")
         profile.partner = partner
         partner.partner = profile
         profile.save()
