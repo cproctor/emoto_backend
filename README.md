@@ -22,8 +22,11 @@ A backend for emoto.
 - `POST /api/v1/users/{user}/pair/{pair_code}`
    Pairs your account with another account.
   
-- `POST /api/v1/users/{user}/unpair``
+- `POST /api/v1/users/{user}/unpair`
   Unpairs your account
+
+- `POST /api/v1/users/{user}/register_push_notifications`
+  Registers a push notification device token. Required JSON payload: {token: string}
 
 - `POST /api/v1/users/new`
   Creates a new user. Required JSON payload: {username: str, latitude: float, longitude: float}
@@ -38,3 +41,4 @@ A backend for emoto.
 - requests
 - pillow
 - pyaml
+- django-push-notifications

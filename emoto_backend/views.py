@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ValidationError
 from datetime import datetime
+from push_notifications.models import APNSDevice
 import json
 import logging
 
@@ -80,6 +81,9 @@ def new_message(request, username):
             emoto = None
         message = Message(text=props.get('text'), author=profile, emoto=emoto)
         message.save()
+        if profile.partner and profile.partner.device_token:
+            partnerPhone = APNSDevice.objects.get(registration_id=profile.partner.device_token)
+            partnerPhone.send_message("New emoto", badge=1)
         return JsonResponse(message.json())
         
     except Profile.DoesNotExist:
@@ -122,6 +126,9 @@ def set_current_emoto(request, username):
         log.info("Setting emoto for {} to {}".format(profile.username, emoto.name))
         profile.current_emoto = emoto
         profile.save()
+        if profile.partner and profile.partner.device_token:
+            partnerPhone = APNSDevice.objects.get(registration_id=profile.partner.device_token)
+            partnerPhone.send_message("Your partner's emoto was updated.")
         return JsonResponse(profile.status_json())
     except Profile.DoesNotExist:
         return JsonResponse({"error": "no such user"}, status=400)
@@ -205,11 +212,12 @@ def register_push_notifications(request, username):
         if missing: 
             return JsonResponse({"error": "missing properties: {}".format(", ".join(missing))}, status=400)
         profile.device_token = props["token"]
+        phone = APNSDevice(registration_id=props['token'])
+        phone.save()
         profile.save()
         return JsonResponse(profile.status_json())
     except Profile.DoesNotExist:
         return err("no such user")
-
 
 def emotos(request):
     emotos = Emoto.objects.filter(available=True).all()

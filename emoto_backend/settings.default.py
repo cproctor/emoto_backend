@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'push_notifications',
     'emoto_backend'
 ]
 
@@ -133,3 +134,8 @@ WUNDERGROUND_KEY = '...'
 WEATHER_EXPIRATION_SECONDS = 60 * 60
 
 USE_TZ = False
+
+PUSH_NOTIFICATIONS_SETTINGS = {
+        "GCM_API_KEY": "[your api key]",
+        "APNS_CERTIFICATE": "/path/to/your/certificate.pem",
+}
